@@ -1,0 +1,12 @@
+[mcp_servers.stata-local]
+command = "C:/path/to/stata-mcp/.venv/Scripts/python.exe"
+args = ["-m", "stata_mcp"]
+startup_timeout_sec = 30
+tool_timeout_sec = 240
+
+[mcp_servers.stata-local.env]
+STATA_HOME = "C:/Program Files/StataNow19"
+STATA_EDITION = "be"
+STATA_WORKDIR = "C:/path/to/stata-analysis"
+STATA_TIMEOUT = "120"
+PYTHONUTF8 = "1"

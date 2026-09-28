@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "personal-stata-mcp"
+version = "0.1.0"
+description = "Local Stata MCP server with isolated PyStata sessions and reproducible logs"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["mcp>=1.12,<2", "numpy>=1.24", "pandas>=2", "ipython>=8,<10"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10", "build>=1,<2"]
+
+[project.scripts]
+stata-mcp = "stata_mcp.server:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
