@@ -41,6 +41,8 @@ def test_stdio_analysis_image_error_and_reset(tmp_path):
                 values = await client.call_tool('stata_results', {})
                 assert values.structuredContent['e']['e(N)'] == 4
                 assert values.structuredContent['e']['e(b)']['values'][0] == pytest.approx([2, 1])
+                # Perfect fit has undefined inference in Stata: never invent stars.
+                assert not values.structuredContent['regression_report']['available']
                 info = await client.call_tool('stata_describe', {})
                 assert info.structuredContent['observations'] == 4
                 invalid = await client.call_tool('stata_run', {'code': 'clear', 'do_file': 'anything'})
@@ -53,5 +55,13 @@ def test_stdio_analysis_image_error_and_reset(tmp_path):
                 assert (await client.call_tool('stata_results', {})).isError
                 await client.call_tool('stata_reset', {})
                 assert (await client.call_tool('stata_describe', {})).structuredContent['observations'] == 0
+                assert not (await client.call_tool('stata_run', {'code': 'sysuse auto\nregress price mpg weight i.foreign length trunk headroom, vce(robust)'})).isError
+                values = (await client.call_tool('stata_results', {})).structuredContent
+                report = values['regression_report']
+                assert report['available'], report
+                assert report['legend'] == '* p<0.10, ** p<0.05, *** p<0.01'
+                assert '| length | -90.18* |\n|  | (50.17) |' in report['markdown']
+                assert '| headroom | -606.66** |\n|  | (286.34) |' in report['markdown']
+                assert report['standard_errors'] == 'robust'
 
     asyncio.run(workflow())

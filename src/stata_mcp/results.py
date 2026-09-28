@@ -1,6 +1,8 @@
 """Bounded JSON representations of Stata returns, preserving matrix labels."""
 import math
 
+from .reporting import regression_report
+
 
 def number(value):
     v = float(value)
@@ -43,4 +45,5 @@ def snapshot():
                                   'truncated': truncated}
                     result['truncated'] |= truncated
         result[namespace] = items
+    result['regression_report'] = regression_report(result)
     return result
