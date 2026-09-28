@@ -4,11 +4,11 @@ Codex에서 로컬 Stata를 실행하는 개인용 첫 버전입니다. 표준 M
 
 ## Codex에서 시작하기
 
-**Windows 자동 설치:** [Releases](https://github.com/seokjinwoo/stata-mcp/releases)의 `stata-mcp-0.1.2-windows-setup.zip`을 내려받아 **모두 압축 풀기 → 설치.cmd 더블클릭**으로 실행하세요. 설치된 Python과 Stata를 확인하고, 전용 환경 생성·패키지 설치·실제 회귀/그래프 검사·Codex 설정 등록을 진행합니다. 완료 후 Codex를 완전히 종료했다가 새 대화를 여세요.
+**Windows 자동 설치:** [Releases](https://github.com/seokjinwoo/stata-mcp/releases)의 `stata-mcp-0.1.3-windows-setup.zip`을 내려받아 **모두 압축 풀기 → 설치.cmd 더블클릭**으로 실행하세요. 설치된 Python과 Stata를 확인하고, 전용 환경 생성·패키지 설치·실제 회귀/그래프 검사·Codex 설정 등록을 진행합니다. 완료 후 Codex를 완전히 종료했다가 새 대화를 여세요.
 
 64비트 Python 3.11 이상(검증 버전 3.12), 정상 실행되는 Stata와 라이선스, 인터넷이 필요합니다. Python·Stata 본체는 자동 설치하지 않습니다. Python이 없으면 설치 안내를 표시합니다. 기존 설정은 백업하며 `stata-local`이 이미 다르게 설정되어 있으면 교체 여부를 묻습니다. 다른 설정은 보존합니다. [자세한 자동 설치 안내](installer/설치안내.md)를 참고하세요.
 
-서버는 `%LOCALAPPDATA%\StataMCP\envs\0.1.2`에 설치합니다. Claude Desktop용 JSON 예시도 생성하지만 Claude 앱 설정을 자동 변경하지는 않습니다. 자동 설치 ZIP은 GitHub 로그인 후 다운로드하며, Git·Docker·Node.js는 필요하지 않습니다.
+서버는 `%LOCALAPPDATA%\StataMCP\envs\0.1.3`에 설치합니다. Claude Desktop용 JSON 예시도 생성하지만 Claude 앱 설정을 자동 변경하지는 않습니다. 자동 설치 ZIP은 GitHub 로그인 후 다운로드하며, Git·Docker·Node.js는 필요하지 않습니다.
 
 아래는 수동 설치를 사용하는 경우의 절차입니다.
 
@@ -51,7 +51,7 @@ Claude Desktop에는 `examples/claude_desktop_config.json`의 `mcpServers.stata-
 
 ### 회귀표 기본 형식
 
-회귀표는 **추정치 다음 행에 괄호로 표준오차**를 표시합니다. 별표는 반올림 전 p값으로 `* p<0.10`, `** p<0.05`, `*** p<0.01`을 적용합니다. 괄호에 p값을 넣지 않습니다. 여러 모형은 열로 나란히 비교하며 표본 수, R², 수정 R²를 함께 보고합니다. 사용자가 다른 형식을 명시하면 그 요청을 따릅니다.
+회귀표는 **계수와 같은 셀 안에서 `<br>`로 줄바꿈한 뒤 괄호로 표준오차**를 표시합니다. 별표는 반올림 전 p값으로 `* p<0.10`, `** p<0.05`, `*** p<0.01`을 적용합니다. 괄호에 p값을 넣지 않습니다. 여러 모형은 열로 나란히 비교하며 표본 수, R², 수정 R²를 함께 보고합니다. 사용자가 다른 형식을 명시하면 그 요청을 따릅니다.
 
 `stata_results`의 `regression_report`에는 이 형식의 Markdown과 구조화된 추정치·표준오차·p값·별표가 포함됩니다. 기존 `r`, `e`, `s`와 원래 Stata 로그는 유지합니다. 표준오차는 추정 시 사용한 일반/강건/군집 방식을 그대로 표시하며 자동으로 추정 방식을 바꾸지 않습니다.
 
@@ -107,4 +107,4 @@ $env:STATA_HOME = 'C:/Program Files/StataNow19'
 
 ## 배포 상태
 
-현재는 비공개 시험용 0.1.2입니다. GitHub Releases의 wheel은 로컬 Python 환경에 설치하는 패키지이며, GitHub가 Stata를 대신 실행하는 서비스는 아닙니다. 각 사용자의 PC에 Stata가 설치되어 있어야 합니다. 공개 전 지원 범위와 소스 라이선스를 결정할 예정이며, 현재 오픈소스 라이선스는 지정하지 않았습니다.
+현재는 비공개 시험용 0.1.3입니다. GitHub Releases의 wheel은 로컬 Python 환경에 설치하는 패키지이며, GitHub가 Stata를 대신 실행하는 서비스는 아닙니다. 각 사용자의 PC에 Stata가 설치되어 있어야 합니다. 공개 전 지원 범위와 소스 라이선스를 결정할 예정이며, 현재 오픈소스 라이선스는 지정하지 않았습니다.

@@ -31,11 +31,12 @@ def create_server(settings=None):
         'Use stata_results for named numeric output. e() can persist from earlier commands. '
         'Returned output reaches the AI client. Timeout/reset loses memory. '
         'Use export_graph=true to return the current graph as a PNG image. '
-        'Default regression tables: show each coefficient followed on the next row by its standard error '
+        'Default regression tables: show each coefficient followed by <br> and its standard error '
         'in parentheses, NOT p-values in parentheses. Use * p<0.10, ** p<0.05, *** p<0.01 '
         'from unrounded p-values, with this legend below every table. Preserve the fitted model\'s '
         'standard error type (robust/clustered/conventional) and label it. For multiple models align '
-        'coefficients across columns and put standard errors on the row underneath. Use '
+        'coefficients across columns and put each standard error directly underneath its coefficient '
+        'INSIDE THE SAME TABLE CELL using <br>. Never put standard errors in a separate table row. Use '
         'stata_results.regression_report when available; never invent significance for omitted terms '
         'or unavailable p-values. Include N, R-squared and adjusted R-squared when available. '
         'Follow an explicit user request for a different table format.'
@@ -85,8 +86,9 @@ def create_server(settings=None):
 
         Fails after a failed execution or reset. e() may be inherited from earlier commands; this is a
         session snapshot, not proof the last command estimated a model. Check run ID and e(cmdline).
-        regression_report provides a verified OLS table: estimates with standard errors beneath in
-        parentheses, * p<0.10, ** p<0.05, *** p<0.01. Use this format for comparative tables too.
+        regression_report provides a verified OLS table: estimates with <br> and standard errors in
+        parentheses in the SAME CELL, * p<0.10, ** p<0.05, *** p<0.01. No separate SE row.
+        Use this format for comparative tables too.
         If unavailable, replay the intended stored regression (estimates replay) before retrieving
         results; do not reuse unrelated r(table). Preserve robust/clustered standard errors.
         """

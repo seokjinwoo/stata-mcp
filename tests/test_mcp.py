@@ -60,8 +60,8 @@ def test_stdio_analysis_image_error_and_reset(tmp_path):
                 report = values['regression_report']
                 assert report['available'], report
                 assert report['legend'] == '* p<0.10, ** p<0.05, *** p<0.01'
-                assert '| length | -90.18* |\n|  | (50.17) |' in report['markdown']
-                assert '| headroom | -606.66** |\n|  | (286.34) |' in report['markdown']
+                assert '| length | -90.18*<br>(50.17) |' in report['markdown']
+                assert '| headroom | -606.66**<br>(286.34) |' in report['markdown']
                 assert report['standard_errors'] == 'robust'
 
     asyncio.run(workflow())

@@ -17,8 +17,9 @@ def fixture_result():
 def test_estimates_are_followed_by_parenthesized_se():
     from stata_mcp.reporting import regression_report
     result = regression_report(fixture_result())
-    assert '| x | 2.00*** |\n|  | (0.50) |' in result['markdown']
-    assert '| _cons | 1.00* |\n|  | (1.00) |' in result['markdown']
+    assert '| x | 2.00***<br>(0.50) |' in result['markdown']
+    assert '| _cons | 1.00*<br>(1.00) |' in result['markdown']
+    assert '\n|  |' not in result['markdown']
     assert result['standard_errors'] == 'robust'
     assert result['legend'] == '* p<0.10, ** p<0.05, *** p<0.01'
 

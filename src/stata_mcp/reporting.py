@@ -61,8 +61,7 @@ def regression_report(snapshot):
         if row['status'] == 'reference_or_omitted':
             lines.append(f"| {_escape(row['term'])} | reference/omitted |")
         else:
-            lines.extend([f"| {_escape(row['term'])} | {row['estimate']:,.2f}{row['stars']} |",
-                          f"|  | ({row['std_error']:,.2f}) |"])
+            lines.append(f"| {_escape(row['term'])} | {row['estimate']:,.2f}{row['stars']}<br>({row['std_error']:,.2f}) |")
     for label, key in [('N', 'e(N)'), ('R²', 'e(r2)'), ('Adjusted R²', 'e(r2_a)')]:
         value = e.get(key)
         if value is not None:
