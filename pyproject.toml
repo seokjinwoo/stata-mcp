@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "personal-stata-mcp"
-version = "0.1.0"
+version = "0.1.1"
 description = "Local Stata MCP server with isolated PyStata sessions and reproducible logs"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = ["mcp>=1.12,<2", "numpy>=1.24", "pandas>=2", "ipython>=8,<10"]
+dependencies = ["mcp>=1.12,<2", "numpy>=1.24", "pandas>=2", "ipython>=8,<10", "tomlkit>=0.13,<1"]
 
 [project.optional-dependencies]
 dev = ["pytest>=8,<10", "build>=1,<2"]

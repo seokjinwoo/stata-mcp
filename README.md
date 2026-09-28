@@ -4,6 +4,14 @@ Codex에서 로컬 Stata를 실행하는 개인용 첫 버전입니다. 표준 M
 
 ## Codex에서 시작하기
 
+**Windows 자동 설치:** [Releases](https://github.com/seokjinwoo/stata-mcp/releases)의 `stata-mcp-0.1.1-windows-setup.zip`을 내려받아 **모두 압축 풀기 → 설치.cmd 더블클릭**으로 실행하세요. 설치된 Python과 Stata를 확인하고, 전용 환경 생성·패키지 설치·실제 회귀/그래프 검사·Codex 설정 등록을 진행합니다. 완료 후 Codex를 완전히 종료했다가 새 대화를 여세요.
+
+64비트 Python 3.11 이상(검증 버전 3.12), 정상 실행되는 Stata와 라이선스, 인터넷이 필요합니다. Python·Stata 본체는 자동 설치하지 않습니다. Python이 없으면 설치 안내를 표시합니다. 기존 설정은 백업하며 `stata-local`이 이미 다르게 설정되어 있으면 교체 여부를 묻습니다. 다른 설정은 보존합니다. [자세한 자동 설치 안내](installer/설치안내.md)를 참고하세요.
+
+서버는 `%LOCALAPPDATA%\StataMCP\envs\0.1.1`에 설치합니다. Claude Desktop용 JSON 예시도 생성하지만 Claude 앱 설정을 자동 변경하지는 않습니다. 자동 설치 ZIP은 GitHub 로그인 후 다운로드하며, Git·Docker·Node.js는 필요하지 않습니다.
+
+아래는 수동 설치를 사용하는 경우의 절차입니다.
+
 아래 설치 절차를 완료하고 `examples/codex.toml`을 자신의 경로에 맞게 설정합니다. Codex에 등록한 후 MCP 서버를 다시 시작하고 새 대화에서 다음처럼 요청하세요.
 
 > stata-local의 stata_status로 연결 상태를 확인한 뒤, sysuse auto 예제로 price를 mpg와 weight에 회귀분석해 줘. 계수와 표본 수, 실행 로그 경로를 보여 줘.
@@ -91,4 +99,4 @@ $env:STATA_HOME = 'C:/Program Files/StataNow19'
 
 ## 배포 상태
 
-현재는 비공개 시험용 0.1.0입니다. GitHub Releases의 wheel은 로컬 Python 환경에 설치하는 패키지이며, GitHub가 Stata를 대신 실행하는 서비스는 아닙니다. 각 사용자의 PC에 Stata가 설치되어 있어야 합니다. 공개 전 지원 범위와 소스 라이선스를 결정할 예정이며, 현재 오픈소스 라이선스는 지정하지 않았습니다.
+현재는 비공개 시험용 0.1.1입니다. GitHub Releases의 wheel은 로컬 Python 환경에 설치하는 패키지이며, GitHub가 Stata를 대신 실행하는 서비스는 아닙니다. 각 사용자의 PC에 Stata가 설치되어 있어야 합니다. 공개 전 지원 범위와 소스 라이선스를 결정할 예정이며, 현재 오픈소스 라이선스는 지정하지 않았습니다.
