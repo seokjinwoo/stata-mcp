@@ -24,6 +24,37 @@ Codex에서 로컬 Stata를 실행하는 개인용 첫 버전입니다. 표준 M
 
 현재 대화의 도구 목록은 자동 갱신되지 않을 수 있습니다. 새 대화에서도 없으면 Codex의 MCP 설정에서 `stata-local`을 다시 시작하거나 앱을 다시 시작하세요.
 
+## DID 예제 실행 결과
+
+Stata 공식 **hospdd 인공 예제 자료**로 새 입원 절차가 환자 만족도에 미치는 효과를 추정했습니다. 실제 정책 평가 결과가 아닌 사용 예제입니다. StataNow 19.5 BE에서 stata-local MCP로 실행했습니다(2026-09-29).
+
+```stata
+set scheme stcolor
+webuse hospdd, clear
+didregress (satis) (procedure), group(hospital) time(month)
+estat ptrends
+estat granger
+estat trendplots
+```
+
+| 항목 | DID 추정 결과 |
+|---|---:|
+| 새 입원 절차의 ATET | 0.848***<br>(0.032) |
+| 95% 신뢰구간 | [0.783, 0.913] |
+| 관측 수 | 7,368 |
+| 병원 수(군집 수) | 46 |
+| 처치 병원 / 비교 병원 | 18 / 28 |
+| 평행한 선형 사전 추세 검정 p값 | 0.4615 |
+| 처치 전 선행효과 검정 p값 | 0.7239 |
+
+괄호 안은 **병원 단위 군집 표준오차**입니다. `* p<0.10`, `** p<0.05`, `*** p<0.01`이며, 별표는 반올림 전 p값으로 판정합니다. 병원·월 고정효과를 통제한 ATET는 약 0.848점입니다. 두 사전 검정에서 귀무가설을 기각하지 못했지만, 이것이 평행추세나 인과 식별 가정을 증명하지는 않습니다.
+
+![DID 평행추세 진단: 관측 평균과 선형 추세 모형](examples/results/didregress_trendplots.png)
+
+왼쪽은 월별 관측 평균, 오른쪽은 선형 추세 모형입니다. 파란색은 비교집단, 분홍색은 처치집단이며 새 입원 절차는 4월부터 적용됩니다. 그래프는 `stcolor` 스킴을 사용했습니다.
+
+[예제 코드](examples/demo.do) · [결과 설명과 재현 방법](examples/README.md) · [그래프 원본](examples/results/didregress_trendplots.png) · [Stata 공식 설명](https://www.stata.com/features/overview/difference-in-differences-DID-DDD/)
+
 ## 설치
 
 Python 3.11 이상(검증 버전 3.12), 적법하게 사용할 수 있는 Stata 설치와 해당 PyStata가 필요합니다. Stata는 배포물에 포함하지 않습니다. 아래 명령은 이 프로젝트 폴더에서 실행합니다.
