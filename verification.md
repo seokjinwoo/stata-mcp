@@ -1,5 +1,9 @@
 # 검증 기록 — 2026-09-28
 
+## DID 기본 예제 — 2026-09-29
+
+기본 사용 예제를 공식 hospdd 인공 자료의 didregress로 변경했습니다. 실제 stata-local MCP에서 N=7,368, 병원 군집 46개, ATET=0.8479879, 군집 표준오차=0.0321121을 확인했습니다. estat ptrends의 p값은 0.4615, estat granger는 0.7239였습니다. stcolor의 estat trendplots PNG와 저장한 추정 결과를 확인했습니다. 이 검증은 예제 실행에 관한 것으로 전체 테스트를 새로 실행했다는 의미가 아닙니다. 자동 regression_report의 지원 범위는 여전히 OLS regress입니다.
+
 ## 환경
 
 - Windows, Python 3.12.14

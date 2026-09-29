@@ -14,11 +14,13 @@ Codex에서 로컬 Stata를 실행하는 개인용 첫 버전입니다. 표준 M
 
 아래 설치 절차를 완료하고 `examples/codex.toml`을 자신의 경로에 맞게 설정합니다. Codex에 등록한 후 MCP 서버를 다시 시작하고 새 대화에서 다음처럼 요청하세요.
 
-> stata-local의 stata_status로 연결 상태를 확인한 뒤, sysuse auto 예제로 price를 mpg와 weight에 회귀분석해 줘. 계수와 표본 수, 실행 로그 경로를 보여 줘.
+> stata-local의 stata_status로 연결 상태를 확인한 뒤, Stata 공식 hospdd 예제에서 didregress (satis) (procedure), group(hospital) time(month)를 실행해 줘. ATET와 병원 단위 군집 표준오차, 표본 수를 보고하고, estat ptrends와 estat granger로 사전 추세를 점검한 뒤 stcolor 스킴으로 estat trendplots를 그려 줘. 실행 로그 경로도 보여 줘.
+
+실행 가능한 예제는 `examples/demo.do`입니다. Stata 19와 예제 자료를 내려받을 인터넷 연결이 필요합니다. 출력 폴더를 인수로 지정할 수 있습니다. 자동 회귀표 `regression_report`는 현재 OLS `regress`용이므로, `didregress`에서는 Stata 로그와 원래 추정 결과를 확인합니다.
 
 이어지는 그래프 요청:
 
-> 현재 데이터의 price와 weight 산점도를 그리고 stata_run의 export_graph를 켜서 보여 줘.
+> hospdd 자료의 DID 모형을 실행한 세션에서 estat trendplots를 stcolor 스킴으로 그리고 stata_run의 export_graph를 켜서 보여 줘.
 
 현재 대화의 도구 목록은 자동 갱신되지 않을 수 있습니다. 새 대화에서도 없으면 Codex의 MCP 설정에서 `stata-local`을 다시 시작하거나 앱을 다시 시작하세요.
 
