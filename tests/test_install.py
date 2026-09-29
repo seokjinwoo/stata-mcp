@@ -120,3 +120,71 @@ def test_selected_folder_with_two_editions_offers_choice(installer, tmp_path, mo
     monkeypatch.setattr(filedialog, 'askdirectory', lambda **kwargs: str(home))
     monkeypatch.setattr('builtins.input', lambda _: '2')
     assert installer.select_stata(tmp_path / 'missing', None, False) == (home.resolve(), 'mp')
+
+
+def test_claude_merge_backup_and_repeat(installer, tmp_path):
+    config = tmp_path / 'claude_desktop_config.json'
+    original = b'{"preferences":{"theme":"dark"},"mcpServers":{"other":{"command":"keep"}}}'
+    config.write_bytes(original)
+    entry = installer.server_entry(sys.executable, tmp_path, 'be', tmp_path / '한글 folder')
+    result = installer.register_claude(config, entry)
+    parsed = json.loads(config.read_text(encoding='utf-8'))
+    assert parsed['preferences'] == {'theme': 'dark'}
+    assert parsed['mcpServers']['other'] == {'command': 'keep'}
+    assert parsed['mcpServers']['stata-local'] == {k: entry[k] for k in ('command', 'args', 'env')}
+    assert Path(result['backup']).read_bytes() == original
+    installed = config.read_bytes()
+    assert installer.register_claude(config, entry)['changed'] is False
+    assert config.read_bytes() == installed
+
+
+@pytest.mark.parametrize('original', [b'{bad', b'[]', b'{"mcpServers":null}', b'{"mcpServers":[]}', b'{"x":1,"x":2}'])
+def test_claude_rejects_invalid_config_without_changes(installer, tmp_path, original):
+    config = tmp_path / 'claude.json'
+    config.write_bytes(original)
+    with pytest.raises(ValueError):
+        installer.register_claude(config, {'command': 'python', 'args': [], 'env': {}}, replace=True)
+    assert config.read_bytes() == original
+
+
+def test_claude_conflict_requires_replace(installer, tmp_path):
+    config = tmp_path / 'claude.json'
+    original = b'{"mcpServers":{"stata-local":{"command":"old"},"other":{"command":"keep"}}}'
+    config.write_bytes(original)
+    entry = {'command': 'new', 'args': [], 'env': {}}
+    with pytest.raises(installer.ConfigConflict):
+        installer.register_claude(config, entry)
+    assert config.read_bytes() == original
+    installer.register_claude(config, entry, replace=True)
+    assert json.loads(config.read_text())['mcpServers'] == {'stata-local': entry, 'other': {'command': 'keep'}}
+
+
+@pytest.mark.parametrize('client', ['codex', 'claude', 'both'])
+def test_installer_registers_only_selected_clients(installer, tmp_path, monkeypatch, client):
+    monkeypatch.setattr(installer, 'check_connection', lambda entry: {'observations': 74})
+    codex, claude = tmp_path / 'config.toml', tmp_path / 'claude.json'
+    entry = installer.server_entry(sys.executable, tmp_path, 'be', tmp_path / 'analysis')
+    report = installer.finish_install(codex, entry, tmp_path / 'install', client=client, claude_config=claude)
+    assert codex.exists() == (client in ('codex', 'both'))
+    assert claude.exists() == (client in ('claude', 'both'))
+    assert set(report['registrations']) == ({'codex', 'claude'} if client == 'both' else {client})
+
+
+def test_both_configs_preflight_before_any_write(installer, tmp_path, monkeypatch):
+    def unexpected(entry):
+        pytest.fail('Stata must not run before config preflight')
+    monkeypatch.setattr(installer, 'check_connection', unexpected)
+    codex, claude = tmp_path / 'config.toml', tmp_path / 'claude.json'
+    claude.write_bytes(b'{broken')
+    entry = installer.server_entry(sys.executable, tmp_path, 'be', tmp_path)
+    with pytest.raises(ValueError):
+        installer.finish_install(codex, entry, tmp_path / 'install', client='both', claude_config=claude)
+    assert not codex.exists()
+    assert claude.read_bytes() == b'{broken'
+
+
+def test_client_selection(installer, monkeypatch):
+    assert installer.select_client('claude', False) == 'claude'
+    assert installer.select_client(None, True) == 'codex'
+    monkeypatch.setattr('builtins.input', lambda _: '3')
+    assert installer.select_client(None, False) == 'both'

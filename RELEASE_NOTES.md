@@ -1,3 +1,16 @@
+# v0.1.4 — 공개 시험 배포 및 Claude Desktop 자동 설치
+
+- Windows 설치기에서 Codex / Claude Desktop / 둘 다를 선택할 수 있습니다.
+- Claude Desktop 설정에 stata-local을 자동 등록하며 다른 MCP 서버와 앱 설정을 보존하고 원본을 백업합니다.
+- 설정 충돌은 교체 동의를 받고 처리하며, 잘못된 JSON과 중복 키는 원본을 덮어쓰지 않습니다.
+- 고급 옵션 `-Client codex|claude|both`, `-ClaudeConfig`를 추가했습니다. 기존 비대화형 설치의 기본값은 Codex입니다.
+- 설치 ZIP에 DID 예제 코드·결과 설명·stcolor 그래프를 포함했습니다.
+- Python·Stata·AI 앱 및 유효한 Stata 라이선스를 사용자가 준비해야 합니다.
+
+Claude 앱 UI 안에서의 최종 도구 호출은 아직 미검증입니다. 설치 결과와 오류는 GitHub Issues로 알려주세요. 개인 데이터나 원본 설정 전체는 첨부하지 마세요.
+
+---
+
 # v0.1.3 — 같은 셀 안의 계수·표준오차
 
 - 회귀표의 각 셀을 `계수와 별표<br>(표준오차)` 형식으로 반환합니다. 표준오차를 별도 표 행에 넣지 않습니다.

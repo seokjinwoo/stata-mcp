@@ -67,6 +67,10 @@ def _prepared_config(path, entry, replace):
 def register_codex(path, entry, replace=False):
     path = Path(path)
     original, updated = _prepared_config(path, entry, replace)
+    return _write_config(path, original, updated)
+
+
+def _write_config(path, original, updated):
     if updated is None:
         return {'changed': False, 'backup': None}
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -77,7 +81,7 @@ def register_codex(path, entry, replace=False):
     temporary = None
     try:
         if (path.read_bytes() if path.exists() else None) != original:
-            raise ValueError('설정 파일이 변경됐습니다. Codex 설정 편집을 마친 뒤 다시 실행하세요.')
+            raise ValueError('설정 파일이 변경됐습니다. 앱 설정 편집을 마친 뒤 다시 실행하세요.')
         backup = None
         if original is not None:
             backup = path.with_name(path.name + '.before-stata-' + datetime.now().strftime('%Y%m%d-%H%M%S-%f') + '.bak')
@@ -96,6 +100,65 @@ def register_codex(path, entry, replace=False):
         if temporary is not None:
             temporary.unlink(missing_ok=True)
         lock.unlink(missing_ok=True)
+
+
+def _unique_json_object(pairs):
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError('JSON 설정에 중복 키가 있습니다. 원본을 수정한 뒤 다시 실행하세요.')
+        result[key] = value
+    return result
+
+
+def _prepared_claude_config(path, entry, replace):
+    original = path.read_bytes() if path.exists() else None
+    before = json.loads(original.decode('utf-8-sig'), object_pairs_hook=_unique_json_object) if original is not None else {}
+    if not isinstance(before, dict) or not isinstance(before.get('mcpServers', {}), dict):
+        raise ValueError('Claude 설정과 mcpServers는 JSON 객체여야 합니다. 원본은 변경하지 않았습니다.')
+    servers = before.get('mcpServers', {})
+    claude = {key: entry[key] for key in ('command', 'args', 'env')}
+    if servers.get('stata-local') == claude:
+        return original, None
+    if 'stata-local' in servers and not replace:
+        raise ConfigConflict('기존 Claude stata-local 설정이 다릅니다. 교체 동의가 필요합니다.')
+    updated = {**before, 'mcpServers': {**servers, 'stata-local': claude}}
+    return original, (json.dumps(updated, ensure_ascii=False, indent=2, allow_nan=False) + '\n').encode('utf-8')
+
+
+def register_claude(path, entry, replace=False):
+    path = Path(path)
+    original, updated = _prepared_claude_config(path, entry, replace)
+    return _write_config(path, original, updated)
+
+
+def default_claude_config():
+    return Path(os.environ.get('APPDATA', str(Path.home() / 'AppData' / 'Roaming'))) / 'Claude' / 'claude_desktop_config.json'
+
+
+def client_configs(client, codex_config, claude_config=None):
+    configs = {}
+    if client not in ('codex', 'claude', 'both'):
+        raise ValueError('지원하지 않는 앱입니다.')
+    if client in ('codex', 'both'):
+        configs['codex'] = (Path(codex_config), _prepared_config, register_codex)
+    if client in ('claude', 'both'):
+        configs['claude'] = (Path(claude_config) if claude_config is not None else default_claude_config(), _prepared_claude_config, register_claude)
+    if len({path.resolve() for path, _, _ in configs.values()}) != len(configs):
+        raise ValueError('Codex와 Claude 설정은 서로 다른 파일이어야 합니다.')
+    return configs
+
+
+def select_client(client, non_interactive):
+    if client:
+        return client
+    if non_interactive:
+        return 'codex'  # Preserve existing scripted installs.
+    print('연결할 앱을 선택하세요: 1. Codex  2. Claude Desktop  3. 둘 다')
+    choice = input('번호 [기본: 1]: ').strip() or '1'
+    if choice not in ('1', '2', '3'):
+        raise ValueError('앱 번호는 1, 2, 3 중에서 선택하세요.')
+    return {'1': 'codex', '2': 'claude', '3': 'both'}[choice]
 
 
 def export_claude(path, entry):
@@ -143,15 +206,22 @@ def check_connection(entry):
     return asyncio.run(check())
 
 
-def finish_install(config, entry, install_dir, replace=False):
-    config, install_dir = Path(config), Path(install_dir)
-    _prepared_config(config, entry, replace)  # Fail before doing an analysis on malformed/conflicting config.
+def finish_install(config, entry, install_dir, replace=False, *, client='codex', claude_config=None):
+    install_dir = Path(install_dir)
+    configs = client_configs(client, config, claude_config)
+    for path, prepare, _ in configs.values():
+        prepare(path, entry, replace)  # Validate every selected config before analysis or writes.
     print('Stata 연결·회귀분석·그래프를 검사합니다...', flush=True)
     result = check_connection(entry)
     install_dir.mkdir(parents=True, exist_ok=True)
     export_claude(install_dir / 'claude-desktop.local.json', entry)
-    registration = register_codex(config, entry, replace)
-    report = {'config': str(config), 'registration': registration, 'check': result}
+    report = {'client': client, 'registrations': {}, 'check': result}
+    for name, (path, _, register) in configs.items():
+        report['registrations'][name] = {'config': str(path), **register(path, entry, replace)}
+        print(f'{name} 설정 등록 완료: {path}', flush=True)
+    if 'codex' in report['registrations']:
+        report['config'] = str(config)
+        report['registration'] = report['registrations']['codex']
     (install_dir / 'installation-result.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
     return report
 
@@ -197,34 +267,39 @@ def select_stata(home, edition, non_interactive):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Stata MCP 연결 검사 및 Codex 등록')
+    parser = argparse.ArgumentParser(description='Stata MCP 연결 검사 및 Codex / Claude Desktop 등록')
     parser.add_argument('--install-dir', type=Path, required=True)
     parser.add_argument('--stata-home', type=Path)
     parser.add_argument('--edition', choices=['be', 'se', 'mp'])
     parser.add_argument('--workdir', type=Path, default=Path.home() / 'Documents' / 'StataAnalysis')
     parser.add_argument('--codex-config', type=Path, default=Path(os.environ.get('CODEX_HOME', str(Path.home() / '.codex'))) / 'config.toml')
+    parser.add_argument('--claude-config', type=Path, default=default_claude_config())
+    parser.add_argument('--client', choices=['codex', 'claude', 'both'])
     parser.add_argument('--replace-existing', action='store_true')
     parser.add_argument('--non-interactive', action='store_true')
     args = parser.parse_args()
     try:
+        client = select_client(args.client, args.non_interactive)
         home, edition = select_stata(args.stata_home, args.edition, args.non_interactive)
         print(f'Stata: {home} ({edition.upper()})', flush=True)
         entry = server_entry(Path(sys.executable), home, edition, args.workdir)
-        try:
-            _prepared_config(args.codex_config, entry, args.replace_existing)
-        except ConfigConflict:
-            if args.non_interactive:
-                raise
-            print(f'기존 stata-local 설정이 있습니다: {args.codex_config}')
-            print('다른 설정은 유지하고 stata-local만 교체합니다. 원본은 백업합니다.')
-            if input('교체하려면 Y를 입력하세요 [기본: 취소]: ').strip().lower() != 'y':
-                raise ValueError('기존 설정을 유지하고 설치를 중단했습니다.')
-            args.replace_existing = True
-        report = finish_install(args.codex_config, entry, args.install_dir, args.replace_existing)
-        print('\n설치 및 연결 검사 완료. Codex를 완전히 종료한 뒤 새 대화를 여세요.')
-        print(f'Codex 설정: {args.codex_config}')
-        if report['registration']['backup']:
-            print(f"설정 백업: {report['registration']['backup']}")
+        replace = args.replace_existing
+        for name, (path, prepare, _) in client_configs(client, args.codex_config, args.claude_config).items():
+            try:
+                prepare(path, entry, args.replace_existing)
+            except ConfigConflict:
+                if args.non_interactive:
+                    raise
+                print(f'기존 {name} stata-local 설정이 있습니다: {path}')
+                print('다른 설정은 유지하고 stata-local만 교체합니다. 원본은 백업합니다.')
+                if input('교체하려면 Y를 입력하세요 [기본: 취소]: ').strip().lower() != 'y':
+                    raise ValueError('기존 설정을 유지하고 설치를 중단했습니다.')
+                replace = True
+        report = finish_install(args.codex_config, entry, args.install_dir, replace, client=client, claude_config=args.claude_config)
+        print('\n설치 및 연결 검사 완료. 선택한 앱을 완전히 종료한 뒤 다시 실행하고 새 대화를 여세요.')
+        for registration in report['registrations'].values():
+            if registration['backup']:
+                print(f"설정 백업: {registration['backup']}")
         print(f'분석 결과 폴더: {args.workdir}')
         print(f'Claude Desktop 설정 예시: {args.install_dir / "claude-desktop.local.json"}')
         return 0

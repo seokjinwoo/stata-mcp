@@ -26,6 +26,10 @@ def main():
                 output.writestr(source.name, data)
         output.writestr('package.json', json.dumps(manifest, indent=2))
         output.write(wheel, 'packages/' + wheel.name)
+        output.write(project / 'README.md', 'README.md')
+        for source in sorted((project / 'examples').rglob('*')):
+            if source.is_file() and source.suffix in {'.md', '.do', '.png', '.toml', '.json'}:
+                output.write(source, source.relative_to(project).as_posix())
     with zipfile.ZipFile(archive) as check:
         assert check.testzip() is None
         assert hashlib.sha256(check.read('packages/' + wheel.name)).hexdigest() == digest

@@ -1,14 +1,14 @@
 # Stata Local MCP
 
-Codex에서 로컬 Stata를 실행하는 개인용 첫 버전입니다. 표준 MCP stdio를 사용하므로 Claude Desktop에도 같은 서버를 연결할 수 있습니다. Windows StataNow19/BE에서 검증하며, 다른 운영체제·에디션은 검증 전입니다.
+Codex와 Claude Desktop에서 로컬 Stata를 실행하는 공개 시험 버전입니다. 표준 MCP stdio 서버와 Windows 자동 설치기를 제공합니다. Windows StataNow19/BE에서 검증하며, 다른 운영체제·에디션은 검증 전입니다.
 
-## Codex에서 시작하기
+## Codex / Claude Desktop에서 시작하기
 
-**Windows 자동 설치:** [Releases](https://github.com/seokjinwoo/stata-mcp/releases)의 `stata-mcp-0.1.3-windows-setup.zip`을 내려받아 **모두 압축 풀기 → 설치.cmd 더블클릭**으로 실행하세요. 설치된 Python과 Stata를 확인하고, 전용 환경 생성·패키지 설치·실제 회귀/그래프 검사·Codex 설정 등록을 진행합니다. 완료 후 Codex를 완전히 종료했다가 새 대화를 여세요.
+**Windows 자동 설치:** [v0.1.4 다운로드](https://github.com/seokjinwoo/stata-mcp/releases/tag/v0.1.4)의 `stata-mcp-0.1.4-windows-setup.zip`을 내려받아 **모두 압축 풀기 → 설치.cmd 더블클릭**으로 실행하세요. 설치 중 **1. Codex / 2. Claude Desktop / 3. 둘 다**를 선택합니다. 전용 환경 생성·패키지 설치·실제 회귀/그래프 검사·선택한 앱 설정 등록을 진행합니다. 완료 후 선택한 앱을 완전히 종료했다가 다시 실행하고 새 대화를 여세요.
 
 64비트 Python 3.11 이상(검증 버전 3.12), 정상 실행되는 Stata와 라이선스, 인터넷이 필요합니다. Python·Stata 본체는 자동 설치하지 않습니다. Python이 없으면 설치 안내를 표시합니다. 기존 설정은 백업하며 `stata-local`이 이미 다르게 설정되어 있으면 교체 여부를 묻습니다. 다른 설정은 보존합니다. [자세한 자동 설치 안내](installer/설치안내.md)를 참고하세요.
 
-서버는 `%LOCALAPPDATA%\StataMCP\envs\0.1.3`에 설치합니다. Claude Desktop용 JSON 예시도 생성하지만 Claude 앱 설정을 자동 변경하지는 않습니다. 자동 설치 ZIP은 GitHub 로그인 후 다운로드하며, Git·Docker·Node.js는 필요하지 않습니다.
+서버는 `%LOCALAPPDATA%\StataMCP\envs\0.1.4`에 설치합니다. 공개 저장소이므로 GitHub 로그인 없이 다운로드할 수 있으며, Git·Docker·Node.js는 필요하지 않습니다. Claude Desktop을 선택하면 `%APPDATA%\Claude\claude_desktop_config.json`에 자동 등록합니다. Windows 데스크톱 앱용이며 Claude 웹사이트의 커넥터 URL에 넣는 방식이 아닙니다. Claude 앱 안에서의 최종 도구 호출은 아직 미검증이며 시험 사용자 피드백을 받고 있습니다.
 
 아래는 수동 설치를 사용하는 경우의 절차입니다.
 
@@ -66,7 +66,7 @@ py -3.12 -m venv .venv
 
 `examples/codex.toml`의 Python·Stata·작업 폴더 경로를 실제 절대 경로로 바꾸고 Codex 설정에 **해당 서버 항목만** 추가합니다. 기존 설정 파일 전체를 교체하지 마세요.
 
-Claude Desktop에는 `examples/claude_desktop_config.json`의 `mcpServers.stata-local` 항목을 기존 설정에 합칩니다. 앱의 개발자 설정에서 로컬 MCP 설정 파일을 열 수 있습니다. Claude Desktop 실제 연결은 아직 검증하지 않았습니다.
+Claude Desktop 수동 설치는 `examples/claude_desktop_config.json`의 경로를 수정한 뒤 `mcpServers.stata-local` 항목만 기존 설정에 합칩니다. 설정 → Developer → Edit Config에서 실제 설정 파일 위치를 확인할 수 있습니다. 자동 설치기가 표시한 경로와 다르면 `-ClaudeConfig`로 그 경로를 지정하세요. [공식 MCP 연결 안내](https://modelcontextprotocol.io/docs/develop/connect-local-servers)를 참고하세요.
 
 ## 제공 도구
 
@@ -140,4 +140,4 @@ $env:STATA_HOME = 'C:/Program Files/StataNow19'
 
 ## 배포 상태
 
-현재는 비공개 시험용 0.1.3입니다. GitHub Releases의 wheel은 로컬 Python 환경에 설치하는 패키지이며, GitHub가 Stata를 대신 실행하는 서비스는 아닙니다. 각 사용자의 PC에 Stata가 설치되어 있어야 합니다. 공개 전 지원 범위와 소스 라이선스를 결정할 예정이며, 현재 오픈소스 라이선스는 지정하지 않았습니다.
+현재는 공개 시험용 0.1.4입니다. GitHub Releases의 wheel은 로컬 Python 환경에 설치하는 패키지이며, 각 사용자의 PC에 Stata와 유효한 라이선스가 필요합니다. 현재 오픈소스 라이선스는 지정하지 않았습니다. 설치 결과와 오류는 [GitHub Issues](https://github.com/seokjinwoo/stata-mcp/issues)에 알려주세요. Windows·Stata 버전, 선택한 앱, 실패 단계, 개인정보를 지운 오류 메시지를 포함하면 도움이 됩니다.

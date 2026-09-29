@@ -55,7 +55,7 @@ def main():
         python = prepare_environment(args.install_dir / 'envs' / version)
         print('2/3 서버와 필요한 패키지를 설치합니다. 인터넷 연결이 필요합니다...', flush=True)
         subprocess.run([str(python), '-m', 'pip', '--disable-pip-version-check', '--no-input', 'install', str(wheel)], check=True)
-        print('3/3 Stata 연결 검사 및 Codex 설정을 준비합니다...', flush=True)
+        print('3/3 Stata 연결 검사 및 앱 설정을 준비합니다...', flush=True)
         return subprocess.run([str(python), '-m', 'stata_mcp.install', '--install-dir', str(args.install_dir), *remaining]).returncode
     except Exception as exc:
         print(f'설치를 완료하지 못했습니다: {exc}', file=sys.stderr)

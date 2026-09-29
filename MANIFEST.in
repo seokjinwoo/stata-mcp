@@ -1,7 +1,7 @@
 include README.md
 include verification.md
 include RELEASE_NOTES.md
-recursive-include examples *.toml *.json *.do
+recursive-include examples *.toml *.json *.do *.md *.png
 recursive-include tests *.py
 recursive-include installer *.py *.ps1 *.cmd *.md
 recursive-include scripts *.py

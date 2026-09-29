@@ -5,6 +5,8 @@ param(
     [ValidateSet('be', 'se', 'mp')][string]$Edition,
     [string]$WorkDir,
     [string]$CodexConfig,
+    [string]$ClaudeConfig,
+    [ValidateSet('codex', 'claude', 'both')][string]$Client,
     [switch]$NonInteractive,
     [switch]$ReplaceExisting
 )
@@ -16,7 +18,7 @@ $OutputEncoding = [Console]::OutputEncoding
 . (Join-Path $PSScriptRoot 'python-discovery.ps1')
 
 try {
-    Write-Host 'Stata MCP setup - Windows / Codex'
+    Write-Host 'Stata MCP setup - Windows / Codex / Claude Desktop'
     $selectedPython = $null
     if ($PythonPath) {
         $selectedPython = Test-Python $PythonPath @()
@@ -47,6 +49,8 @@ try {
     if ($Edition) { $installerArgs += @('--edition', $Edition) }
     if ($WorkDir) { $installerArgs += @('--workdir', $WorkDir) }
     if ($CodexConfig) { $installerArgs += @('--codex-config', $CodexConfig) }
+    if ($ClaudeConfig) { $installerArgs += @('--claude-config', $ClaudeConfig) }
+    if ($Client) { $installerArgs += @('--client', $Client) }
     if ($NonInteractive) { $installerArgs += '--non-interactive' }
     if ($ReplaceExisting) { $installerArgs += '--replace-existing' }
     & $selectedPython @installerArgs

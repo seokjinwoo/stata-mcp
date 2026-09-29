@@ -1,5 +1,13 @@
 # 검증 기록 — 2026-09-28
 
+## v0.1.4 Claude Desktop 설치 — 2026-09-29
+
+전체 테스트 **57 passed in 46.48s**. Claude JSON 설정의 기존 앱 설정·다른 MCP 보존, 백업, 동일 설정 재등록, 충돌 시 원본 유지, 잘못된 JSON·중복 키 거부, 앱별 선택 등록을 검증했습니다.
+
+실제 배포 ZIP을 한글·공백 경로의 새 가상환경에 설치했습니다. PowerShell 설치기에 `-Client both`와 테스트용 설정 경로를 전달하여 Codex·Claude 설정 보존과 원본 백업을 확인했습니다. 같은 설치기를 다시 실행했을 때 두 설정 파일의 바이트가 변하지 않았습니다. 설치된 소스가 배포 소스와 일치함도 확인했습니다.
+
+두 설치 실행 모두 MCP를 통해 실제 Stata auto 회귀(N=74, 예상 계수 일치)와 PNG 그래프 반환을 확인했습니다. 사용자의 실제 앱 설정은 변경하지 않았습니다. **Claude Desktop 앱 UI 안에서의 최종 도구 호출은 아직 미검증**입니다. Windows/Python 3.12/StataNow 19.5 BE 이외 환경은 별도 확인이 필요합니다.
+
 ## DID 기본 예제 — 2026-09-29
 
 기본 사용 예제를 공식 hospdd 인공 자료의 didregress로 변경했습니다. 실제 stata-local MCP에서 N=7,368, 병원 군집 46개, ATET=0.8479879, 군집 표준오차=0.0321121을 확인했습니다. estat ptrends의 p값은 0.4615, estat granger는 0.7239였습니다. stcolor의 estat trendplots PNG와 저장한 추정 결과를 확인했습니다. 이 검증은 예제 실행에 관한 것으로 전체 테스트를 새로 실행했다는 의미가 아닙니다. 자동 regression_report의 지원 범위는 여전히 OLS regress입니다.
