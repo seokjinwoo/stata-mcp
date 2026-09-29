@@ -1,3 +1,14 @@
+# v0.1.5 — 한국어 / English installer
+
+- 설치 첫 화면에서 한국어 또는 English를 선택합니다. Python 확인, 앱 선택, 설정 교체, 완료 안내와 설치기 오류 메시지에 적용됩니다.
+- `-Language ko|en` 및 Python 진입점의 `--language ko|en`을 지원합니다. 비대화형 기본값은 기존과 같은 한국어입니다.
+- 영어 README와 설치 가이드를 추가하고 한국어 문서와 연결했습니다. 설치 ZIP에 두 언어 안내를 모두 포함했습니다.
+- Stata·패키지 관리자·운영체제의 원래 출력과 AI 앱 자체 언어는 변경하지 않습니다.
+
+Choose Korean or English at startup. Installer prompts and errors follow the selected language, including Python detection, app selection, and configuration replacement. Use `-Language en` for scripted English setup. English and Korean guides are included. Original Stata, package manager, and operating system logs retain their language. Claude Desktop UI tool invocation remains unverified.
+
+---
+
 # v0.1.4 — 공개 시험 배포 및 Claude Desktop 자동 설치
 
 - Windows 설치기에서 Codex / Claude Desktop / 둘 다를 선택할 수 있습니다.

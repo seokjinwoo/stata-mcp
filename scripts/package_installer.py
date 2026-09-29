@@ -24,9 +24,14 @@ def main():
                 if source.suffix == '.cmd':
                     data = data.replace(b'\r\n', b'\n').replace(b'\n', b'\r\n')
                 output.writestr(source.name, data)
+                if source.suffix == '.md':
+                    output.writestr('installer/' + source.name, data)
         output.writestr('package.json', json.dumps(manifest, indent=2))
         output.write(wheel, 'packages/' + wheel.name)
         output.write(project / 'README.md', 'README.md')
+        output.write(project / 'README.en.md', 'README.en.md')
+        output.write(project / 'RELEASE_NOTES.md', 'RELEASE_NOTES.md')
+        output.write(project / 'verification.md', 'verification.md')
         for source in sorted((project / 'examples').rglob('*')):
             if source.is_file() and source.suffix in {'.md', '.do', '.png', '.toml', '.json'}:
                 output.write(source, source.relative_to(project).as_posix())

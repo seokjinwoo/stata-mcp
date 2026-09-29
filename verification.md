@@ -1,5 +1,13 @@
 # 검증 기록 — 2026-09-28
 
+## v0.1.5 한국어 / English — 2026-09-29
+
+전체 테스트 **65 passed in 45.12s**. 한국어·영어 앱 선택 안내, 설정 충돌 시 영어 메시지와 원본 보존, bootstrap의 두 언어 오류, Python 탐색 전 언어 적용, 대화형 언어 메뉴에서 Python 진입점까지의 전달을 검증했습니다.
+
+실제 배포 ZIP을 한글·공백 경로의 새 환경에 `-Language en -Client both`로 설치한 뒤 `-Language ko`로 재설치했습니다. 보고서의 언어 값과 완료 메시지가 각각 영어·한국어인 것을 확인했습니다. 두 번 모두 실제 MCP 회귀(N=74, 예상 계수 일치)와 PNG 그래프 반환에 성공했고, 재설치 후 두 앱 설정 파일은 바이트 단위로 동일했습니다. 설치된 소스와 배포 소스도 일치했습니다. 사용자의 실제 앱 설정은 변경하지 않았습니다.
+
+All 65 tests passed. A fresh English installation and a Korean reinstall from the release ZIP both passed real MCP regression and graph checks. App configurations were unchanged on reinstall. Claude Desktop UI tool invocation remains unverified.
+
 ## v0.1.4 Claude Desktop 설치 — 2026-09-29
 
 전체 테스트 **57 passed in 46.48s**. Claude JSON 설정의 기존 앱 설정·다른 MCP 보존, 백업, 동일 설정 재등록, 충돌 시 원본 유지, 잘못된 JSON·중복 키 거부, 앱별 선택 등록을 검증했습니다.

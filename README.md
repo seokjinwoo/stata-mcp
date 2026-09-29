@@ -1,14 +1,18 @@
 # Stata Local MCP
 
+**한국어** | [English](README.en.md)
+
 Codex와 Claude Desktop에서 로컬 Stata를 실행하는 공개 시험 버전입니다. 표준 MCP stdio 서버와 Windows 자동 설치기를 제공합니다. Windows StataNow19/BE에서 검증하며, 다른 운영체제·에디션은 검증 전입니다.
 
 ## Codex / Claude Desktop에서 시작하기
 
-**Windows 자동 설치:** [v0.1.4 다운로드](https://github.com/seokjinwoo/stata-mcp/releases/tag/v0.1.4)의 `stata-mcp-0.1.4-windows-setup.zip`을 내려받아 **모두 압축 풀기 → 설치.cmd 더블클릭**으로 실행하세요. 설치 중 **1. Codex / 2. Claude Desktop / 3. 둘 다**를 선택합니다. 전용 환경 생성·패키지 설치·실제 회귀/그래프 검사·선택한 앱 설정 등록을 진행합니다. 완료 후 선택한 앱을 완전히 종료했다가 다시 실행하고 새 대화를 여세요.
+**Windows 자동 설치:** [v0.1.5 다운로드](https://github.com/seokjinwoo/stata-mcp/releases/tag/v0.1.5)의 `stata-mcp-0.1.5-windows-setup.zip`을 내려받아 **모두 압축 풀기 → 설치.cmd 더블클릭**으로 실행하세요. 첫 화면에서 **한국어 / English**를 선택하고, 설치 중 **1. Codex / 2. Claude Desktop / 3. 둘 다**를 선택합니다. 전용 환경 생성·패키지 설치·실제 회귀/그래프 검사·선택한 앱 설정 등록을 진행합니다. 완료 후 선택한 앱을 완전히 종료했다가 다시 실행하고 새 대화를 여세요.
 
 64비트 Python 3.11 이상(검증 버전 3.12), 정상 실행되는 Stata와 라이선스, 인터넷이 필요합니다. Python·Stata 본체는 자동 설치하지 않습니다. Python이 없으면 설치 안내를 표시합니다. 기존 설정은 백업하며 `stata-local`이 이미 다르게 설정되어 있으면 교체 여부를 묻습니다. 다른 설정은 보존합니다. [자세한 자동 설치 안내](installer/설치안내.md)를 참고하세요.
 
-서버는 `%LOCALAPPDATA%\StataMCP\envs\0.1.4`에 설치합니다. 공개 저장소이므로 GitHub 로그인 없이 다운로드할 수 있으며, Git·Docker·Node.js는 필요하지 않습니다. Claude Desktop을 선택하면 `%APPDATA%\Claude\claude_desktop_config.json`에 자동 등록합니다. Windows 데스크톱 앱용이며 Claude 웹사이트의 커넥터 URL에 넣는 방식이 아닙니다. Claude 앱 안에서의 최종 도구 호출은 아직 미검증이며 시험 사용자 피드백을 받고 있습니다.
+서버는 `%LOCALAPPDATA%\StataMCP\envs\0.1.5`에 설치합니다. 공개 저장소이므로 GitHub 로그인 없이 다운로드할 수 있으며, Git·Docker·Node.js는 필요하지 않습니다. Claude Desktop을 선택하면 `%APPDATA%\Claude\claude_desktop_config.json`에 자동 등록합니다. Windows 데스크톱 앱용이며 Claude 웹사이트의 커넥터 URL에 넣는 방식이 아닙니다. Claude 앱 안에서의 최종 도구 호출은 아직 미검증이며 시험 사용자 피드백을 받고 있습니다.
+
+언어 선택은 설치기 안내에 적용됩니다. Stata·패키지 관리자·운영체제의 원래 로그와 AI 앱의 언어 설정은 변경하지 않습니다. 고급 설치에서는 `-Language ko` 또는 `-Language en`으로 지정할 수 있습니다.
 
 아래는 수동 설치를 사용하는 경우의 절차입니다.
 
@@ -140,4 +144,4 @@ $env:STATA_HOME = 'C:/Program Files/StataNow19'
 
 ## 배포 상태
 
-현재는 공개 시험용 0.1.4입니다. GitHub Releases의 wheel은 로컬 Python 환경에 설치하는 패키지이며, 각 사용자의 PC에 Stata와 유효한 라이선스가 필요합니다. 현재 오픈소스 라이선스는 지정하지 않았습니다. 설치 결과와 오류는 [GitHub Issues](https://github.com/seokjinwoo/stata-mcp/issues)에 알려주세요. Windows·Stata 버전, 선택한 앱, 실패 단계, 개인정보를 지운 오류 메시지를 포함하면 도움이 됩니다.
+현재는 공개 시험용 0.1.5입니다. GitHub Releases의 wheel은 로컬 Python 환경에 설치하는 패키지이며, 각 사용자의 PC에 Stata와 유효한 라이선스가 필요합니다. 현재 오픈소스 라이선스는 지정하지 않았습니다. 설치 결과와 오류는 [GitHub Issues](https://github.com/seokjinwoo/stata-mcp/issues)에 알려주세요. Windows·Stata 버전, 선택한 앱, 실패 단계, 개인정보를 지운 오류 메시지를 포함하면 도움이 됩니다.
